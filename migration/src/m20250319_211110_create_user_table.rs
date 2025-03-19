@@ -25,6 +25,12 @@ impl MigrationTrait for Migration {
                             .not_null()
                     )
                     .col(
+                        ColumnDef::new(User::CPF)
+                            .string()
+                            .string_len(11)
+                            .not_null()
+                    )
+                    .col(
                         ColumnDef::new(User::Email)
                             .string()
                             .not_null()
@@ -65,6 +71,7 @@ enum User {
     Table,
     Id,
     Name,
+    CPF,
     Email,
     Password,
     Role,
