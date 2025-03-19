@@ -1,0 +1,51 @@
+[package]
+name = "controle-estoque-api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+entity = { path = "entity" }
+migration = { path = "migration" }
+
+# async runtime
+tokio = { version = "^1.20", features = ["full"] }
+
+# web framework
+actix-web = "^4"
+actix-cors = "^0.6"
+
+# .env file management
+dotenv = "^0.15"
+
+# logging
+log = { version = "^0.4", features = ["release_max_level_off"] }
+pretty_env_logger = "0.4.0"
+
+# error handling
+thiserror = "^1.0"
+
+# time
+chrono = { version = "^0.4", features = ["serde"] }
+
+# Serialize and Deserialize Data Structures
+serde = { version = "^1", features = ["derive"] }
+
+# macros from enums and strings
+strum = { version = "^0.24", features = ["derive"] }
+strum_macros = "^0.24"
+
+[dependencies.uuid]
+version = "^1.1"
+features = [
+    "v4",                # Lets you generate random UUIDs
+    "fast-rng",          # Use a faster (but still sufficiently random) RNG
+    "macro-diagnostics", # Enable better diagnostics for compile-time UUIDs
+]
+
+[dependencies.sea-orm]
+version = "^0.9"
+features = [
+  "debug-print",
+  "runtime-actix-native-tls",
+  "sqlx-postgres",
+]
