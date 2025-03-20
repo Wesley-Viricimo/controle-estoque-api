@@ -29,6 +29,7 @@ impl MigrationTrait for Migration {
                             .string()
                             .string_len(11)
                             .not_null()
+                            .unique_key()
                     )
                     .col(
                         ColumnDef::new(User::Email)
