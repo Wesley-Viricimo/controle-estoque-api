@@ -9,23 +9,35 @@ pub fn attach_service(app: &mut actix_web::web::ServiceConfig) {
 
 #[post("/user")]
 pub async fn create_user(db: Data<DbClient>, new_user: Json<User>) -> HttpResponse {
-    let exists = match db.user_dao.find_by_email(new_user.email.clone()).await {
-        Ok(exists) => exists,
-        Err(err) => return HttpResponse::InternalServerError().body(format!("Erro ao verificar e-mail no banco de dados. Erro: {}", err.to_string())),
-    };
-
     let mut errors = validate_user_fields(&new_user);
 
-    if exists {
-        let error = FieldError {
-            field_name: "Email já existente".to_string(),
-            message: "Este Email já está cadastrado no sistema!".to_string()
-        };
+    let email = match &new_user.email {
+        Some(email) => email.clone(),
+        None => {
+            errors.push(FieldError {
+                field_name: "Email".to_string(),
+                message: "Campo Email é obrigatório!".to_string(),
+            });
 
-        errors.push(error);
+            let response_error = get_response_error(errors);
+            return HttpResponse::BadRequest().json(response_error);
+        },
+    };
+
+    match db.user_dao.find_by_email(email.clone()).await {
+        Ok(exists) if exists => {
+            errors.push(FieldError {
+                field_name: "Email já existente".to_string(),
+                message: "Este Email já está cadastrado no sistema!".to_string(),
+            });
+        },
+        Err(err) => {
+            return HttpResponse::InternalServerError().json(format!("Erro ao verificar e-mail no banco de dados. Erro: {}", err));
+        },
+        _ => {}
     }
 
-    if errors.len() > 0 {
+    if !errors.is_empty() {
         let response_error = get_response_error(errors);
         return HttpResponse::BadRequest().json(response_error);
     }
@@ -33,7 +45,7 @@ pub async fn create_user(db: Data<DbClient>, new_user: Json<User>) -> HttpRespon
     let user_to_insert = User::new(
         new_user.name.clone(), 
         new_user.cpf.clone(),
-        new_user.email.clone(), 
+        Some(email), 
         Some("USUARIO".to_string()), 
         new_user.password.clone(),
     );

@@ -6,7 +6,7 @@ use super::structs::{FieldError, ResponseError};
 pub fn validate_user_fields(user: &Json<User>) -> Vec<FieldError> {
     let mut errors: Vec<FieldError> = Vec::new();
 
-    if user.name.is_empty() {
+    if user.name.is_none() {
         let error = FieldError {
             field_name: "Campo Nome".to_string(),
             message: "Campo Nome é obrigatório!".to_string()
@@ -15,7 +15,7 @@ pub fn validate_user_fields(user: &Json<User>) -> Vec<FieldError> {
         errors.push(error);
     }
 
-    if user.cpf.is_empty() {
+    if user.cpf.is_none() {
         let error = FieldError {
             field_name: "Campo CPF".to_string(),
             message: "Campo CPF é obrigatório!".to_string()
@@ -24,16 +24,7 @@ pub fn validate_user_fields(user: &Json<User>) -> Vec<FieldError> {
         errors.push(error);
     }
 
-    if user.email.is_empty() {
-        let error = FieldError {
-            field_name: "Campo Email".to_string(),
-            message: "Campo Email é obrigatório!".to_string()
-        };
-
-        errors.push(error);
-    }
-
-    if user.password.is_empty() {
+    if user.password.is_none() {
         let error = FieldError {
             field_name: "Campo Password".to_string(),
             message: "Campo Password é obrigatório!".to_string()
