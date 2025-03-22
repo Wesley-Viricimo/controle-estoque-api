@@ -20,8 +20,23 @@ impl UserDao {
             .map_err(|e| Error::DatabaseError(e.to_string()))?;
 
         let exists = match user {
-            Some(_user) => true,
+            Some(_) => true,
             None => false
+        };
+
+        Ok(exists)
+    }
+
+    pub async fn find_by_cpf(&self, cpf: String) -> Result<bool, Error> {
+        let user = user::Entity::find()
+            .filter(user::Column::Cpf.eq(cpf))
+            .one(&self.db_connection)
+            .await
+            .map_err(|e| Error::DatabaseError(e.to_string()))?;
+
+        let exists = match user {
+            Some(_) => true,
+            None => false,
         };
 
         Ok(exists)
