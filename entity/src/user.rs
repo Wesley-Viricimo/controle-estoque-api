@@ -15,17 +15,17 @@ pub struct Model {
     #[serde(skip_deserializing)]
     pub id: Uuid,
 
-    pub name: Option<String>,
+    pub name: String,
 
     #[sea_orm(unique = true, max_len="11")]
-    pub cpf: Option<String>,
+    pub cpf: String,
 
     #[sea_orm(unique = true)]
-    pub email: Option<String>,
+    pub email: String,
 
     pub role: Option<String>,
 
-    pub password: Option<String>,
+    pub password: String,
 
     #[serde(
         rename = "createdAt",
@@ -36,7 +36,7 @@ pub struct Model {
 }
 
 impl Model {
-    pub fn new(name: Option<String>, cpf: Option<String>, email: Option<String>, role: Option<String>, password: Option<String>) -> Self {
+    pub fn new(name: String, cpf: String, email: String, role: Option<String>, password: String) -> Self {
         Model {
             id: Uuid::new_v4(),
             name,

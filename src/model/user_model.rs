@@ -30,19 +30,19 @@ pub struct PublicUser {
     pub user_id: Option<Uuid>,
 
     #[serde(rename = "name")]
-    pub user_name: Option<String>,
+    pub user_name: String,
 
     #[serde(rename = "cpf")]
-    pub user_cpf: Option<String>,
+    pub user_cpf: String,
 
     #[serde(rename = "email")]
-    pub user_email: Option<String>,
+    pub user_email: String,
 
     #[serde(rename = "role")]
     pub user_role: Option<String>,
 
     #[serde(rename = "password")]
-    pub user_password: Option<String>,
+    pub user_password: String,
 
     #[serde(
         rename = "createdAt",

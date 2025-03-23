@@ -1,6 +1,5 @@
 use actix_web::web::{Data, Json};
-use entity::user::Model as User;
-use crate::database::DbClient;
+use crate::{database::DbClient, model::user_model::OptionalUser};
 
 use super::structs::{FieldError, ResponseError};
 
@@ -13,10 +12,10 @@ impl ValidateUserFields {
         Self { db_connection }
     }
 
-    pub async fn validate_user_fields(&self, user: &Json<User>) -> Vec<FieldError> {
+    pub async fn validate_user_fields(&self, user: &Json<OptionalUser>) -> Vec<FieldError> {
         let mut errors: Vec<FieldError> = Vec::new();
 
-        match user.email.clone() {
+        match user.user_email.clone() {
             Some(email) => {
                 if email.is_empty() {
                     errors.push(FieldError {
@@ -57,7 +56,7 @@ impl ValidateUserFields {
             }
         }
 
-        match user.name.clone() {
+        match user.user_name.clone() {
             Some(name) => {
                 if name.len() < 10 {
                     errors.push(FieldError {
@@ -74,7 +73,7 @@ impl ValidateUserFields {
             }
         }
     
-        match user.cpf.clone() {
+        match user.user_cpf.clone() {
             Some(cpf) => {
                 if cpf.len() != 11 {
                     errors.push(FieldError {
@@ -108,7 +107,7 @@ impl ValidateUserFields {
             },
         }
     
-        match user.password.clone() {
+        match user.user_password.clone() {
             Some(password) => {
                 if password.len() < 8 {
                     errors.push(FieldError {

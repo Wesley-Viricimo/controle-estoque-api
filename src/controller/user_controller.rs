@@ -1,6 +1,6 @@
 use actix_web::{post, web::{Data, Json}, HttpResponse};
 use entity::user::Model as User;
-use crate::{database::DbClient, model::user_model::PublicUser, validation::user::{get_response_error, ValidateUserFields}};
+use crate::{database::DbClient, model::user_model::{OptionalUser, PublicUser}, utils::encryptor::encrypt, validation::user::{get_response_error, ValidateUserFields}};
 
 
 pub fn attach_service(app: &mut actix_web::web::ServiceConfig) {
@@ -8,7 +8,7 @@ pub fn attach_service(app: &mut actix_web::web::ServiceConfig) {
 }
 
 #[post("/user")]
-pub async fn create_user(db_connection: Data<DbClient>, new_user: Json<User>) -> HttpResponse {
+pub async fn create_user(db_connection: Data<DbClient>, new_user: Json<OptionalUser>) -> HttpResponse {
     let validate_user = ValidateUserFields::new(db_connection.clone());
 
     let errors = validate_user.validate_user_fields(&new_user).await;
@@ -18,12 +18,14 @@ pub async fn create_user(db_connection: Data<DbClient>, new_user: Json<User>) ->
         return HttpResponse::BadRequest().json(response_error);
     }
 
+    let encrypted_password = encrypt(new_user.user_password.clone().unwrap()).await.unwrap();
+
     let user_to_insert = User::new(
-        new_user.name.clone(), 
-        new_user.cpf.clone(),
-        new_user.email.clone(), 
+        new_user.user_name.clone().unwrap(), 
+        new_user.user_cpf.clone().unwrap(),
+        new_user.user_email.clone().unwrap(), 
         Some("USUARIO".to_string()), 
-        new_user.password.clone(),
+        encrypted_password,
     );
 
     match db_connection.user_dao.create(user_to_insert).await {
