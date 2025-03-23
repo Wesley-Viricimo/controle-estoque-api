@@ -33,6 +33,21 @@ pub struct Model {
     pub created_at: DateTime<Utc>
 }
 
+impl Model {
+    pub fn new(title: String, description: String, status: String, final_rating: Option<String>, client_id: Uuid, technician_id: Option<Uuid>) -> Self {
+        Model {
+            id: Uuid::new_v4(),
+            title,
+            description,
+            status,
+            final_rating,
+            client_id,
+            technician_id,
+            created_at: Utc::now()
+        }
+    }
+}
+
 #[derive(Copy, Clone, Debug, EnumIter)]
 pub enum Relation {
     Client,
@@ -49,7 +64,7 @@ impl RelationTrait for Relation {
                 .on_delete(ForeignKeyAction::Cascade)
                 .on_update(ForeignKeyAction::Cascade)
                 .into(),
-                
+
             // Define que Ticket pertence a um User que é o técnico.
             Self::Technician => Entity::belongs_to(crate::user::Entity)
                 .from(Column::TechnicianId)
