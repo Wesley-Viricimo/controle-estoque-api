@@ -8,7 +8,7 @@ fn get_current_time() -> DateTime<Utc> {
 }
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
-#[sea_orm(table_name = "stock_motimentation")]
+#[sea_orm(table_name = "stock_movimentation")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
