@@ -1,7 +1,6 @@
 use actix_web::web::{Data, Json};
-use crate::{database::DbClient, model::user_model::OptionalUser};
+use crate::{database::DbClient, model::user_model::OptionalUser, response::structs::{FieldError, ResponseError}};
 
-use super::structs::{FieldError, ResponseError};
 
 pub struct ValidateUserFields {
     pub db_connection: Data<DbClient>

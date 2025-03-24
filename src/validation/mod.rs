@@ -1,2 +1,2 @@
-pub mod user;
-pub mod structs;
+pub mod user_validation;
+pub mod product_validation;

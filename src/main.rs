@@ -4,6 +4,7 @@ pub mod utils;
 pub mod dao;
 pub mod controller;
 pub mod validation;
+pub mod response;
 
 use crate::database::DbClient;
 
