@@ -47,6 +47,7 @@ async fn main() -> Result<(), Error> {
             .app_data(db_data.clone())
             .service(health_check)
             .configure(controller::user_controller::attach_service)
+            .configure(controller::product_controller::attach_service)
     })
     .bind(("0.0.0.0", port))?
     .run()
