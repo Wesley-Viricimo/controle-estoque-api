@@ -1,14 +1,10 @@
 use actix_web::{post, web::{Data, Json}, HttpResponse};
-use actix_web::web;
-use crate::{database::DbClient, model::product_model::OptionalProduct, response::structs::SuccessResponse, validation::{product_validation::ValidateProductFields, user_validation::get_response_error}};
+use crate::{database::DbClient, model::product_model::OptionalProduct, response::structs::SuccessResponse, validation::product_validation::{get_response_error, ValidateProductFields}};
 use entity::product::Model as Product;
 
 
-pub fn attach_service(app: &mut web::ServiceConfig) {
-    app.service(
-        web::scope("/api") 
-            .service(create_product) 
-    );
+pub fn attach_service(app: &mut actix_web::web::ServiceConfig) {
+    app.service(create_product);
 }
 
 #[post("/product")]

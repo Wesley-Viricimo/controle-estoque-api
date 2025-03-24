@@ -1,6 +1,6 @@
 use actix_web::web::{Data, Json};
 
-use crate::{database::DbClient, model::product_model::OptionalProduct, response::structs::FieldError};
+use crate::{database::DbClient, model::product_model::OptionalProduct, response::structs::{FieldError, ResponseError}};
 
 pub struct ValidateProductFields {
     pub db_connection: Data<DbClient>
@@ -49,4 +49,15 @@ impl ValidateProductFields {
         }
         return errors
     }
+}
+
+pub fn get_response_error(errors: Vec<FieldError>) -> ResponseError {
+    let response_error = ResponseError {
+        errors,
+        type_error: "Bad Request".to_string(),
+        status: 400,
+        detail: "Existem campos inválidos no cadastro de produto!".to_string()
+    };
+
+    response_error
 }

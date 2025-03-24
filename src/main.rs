@@ -9,7 +9,7 @@ pub mod response;
 use crate::database::DbClient;
 
 use actix_cors::Cors;
-use actix_web::{get, middleware, App, HttpServer, Responder};
+use actix_web::{get, middleware, web, App, HttpServer, Responder};
 use dotenv::dotenv;
 use utils::errors::Error;
 
@@ -46,8 +46,11 @@ async fn main() -> Result<(), Error> {
             .wrap(Cors::permissive())
             .app_data(db_data.clone())
             .service(health_check)
-            .configure(controller::user_controller::attach_service)
-            .configure(controller::product_controller::attach_service)
+            .service(
+                web::scope("/api")
+                    .configure(controller::user_controller::attach_service)
+                    .configure(controller::product_controller::attach_service)
+            )
     })
     .bind(("0.0.0.0", port))?
     .run()

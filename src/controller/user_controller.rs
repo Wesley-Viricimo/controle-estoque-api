@@ -1,14 +1,10 @@
 use actix_web::{post, web::{Data, Json}, HttpResponse};
-use actix_web::web;
 use entity::user::Model as User;
 use crate::{database::DbClient, model::user_model::OptionalUser, response::structs::SuccessResponse, utils::encryptor::encrypt, validation::user_validation::{get_response_error, ValidateUserFields}};
 
 
-pub fn attach_service(app: &mut web::ServiceConfig) {
-    app.service(
-        web::scope("/api") 
-            .service(create_user) 
-    );
+pub fn attach_service(app: &mut actix_web::web::ServiceConfig) {
+    app.service(create_user);
 }
 
 #[post("/user")]
