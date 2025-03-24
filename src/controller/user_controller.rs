@@ -1,6 +1,6 @@
 use actix_web::{post, web::{Data, Json}, HttpResponse};
 use entity::user::Model as User;
-use crate::{database::DbClient, model::user_model::{OptionalUser, PublicUser}, utils::encryptor::encrypt, validation::user::{get_response_error, ValidateUserFields}};
+use crate::{database::DbClient, model::user_model::OptionalUser, utils::encryptor::encrypt, validation::{structs::SuccessResponse, user::{get_response_error, ValidateUserFields}}};
 
 
 pub fn attach_service(app: &mut actix_web::web::ServiceConfig) {
@@ -29,7 +29,15 @@ pub async fn create_user(db_connection: Data<DbClient>, new_user: Json<OptionalU
     );
 
     match db_connection.user_dao.create(user_to_insert).await {
-        Ok(user) => HttpResponse::Created().json(PublicUser::from(user)),
+        Ok(user) => {
+            let response: SuccessResponse<User> = SuccessResponse {
+                data: user,
+                code: 201,
+                detail: "Usuário cadastrado com sucesso!".to_string(),
+            };
+
+            HttpResponse::Created().json(response)
+        },
         Err(err) => HttpResponse::InternalServerError().body(err.to_string()),
     }
 }

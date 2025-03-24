@@ -13,3 +13,10 @@ pub struct FieldError {
     pub field_name: String,
     pub message: String
 }
+
+#[derive(Serialize)]
+pub struct SuccessResponse<T> {
+    pub data: T,
+    pub code: u32,
+    pub detail: String
+}
