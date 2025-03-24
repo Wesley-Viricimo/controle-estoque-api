@@ -43,10 +43,6 @@ impl UserDao {
     }
 
     pub async fn create(&self, new_user: user::Model) -> Result<user::Model, Error> {
-        
-        println!("");
-        debug!("novo usuário: {:?}", new_user);
-        println!("");
 
         let active_model: user::ActiveModel = new_user.into();
 
