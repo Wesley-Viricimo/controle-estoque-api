@@ -13,7 +13,7 @@ pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
     
-    pub id_stock: Uuid,
+    pub id_product: Uuid,
     
     pub type_movimentation: String,
 
@@ -28,10 +28,10 @@ pub struct Model {
 }
 
 impl Model {
-    pub fn new(id_stock: Uuid, type_movimentation: String, quantity: i32) -> Self {
+    pub fn new(id_product: Uuid, type_movimentation: String, quantity: i32) -> Self {
         Model {
             id: Uuid::new_v4(),
-            id_stock,
+            id_product,
             type_movimentation,
             quantity,
             created_at: Utc::now()
@@ -41,15 +41,15 @@ impl Model {
 
 #[derive(Copy, Clone, Debug, EnumIter)]
 pub enum Relation {
-    Stock
+    Product
 }
 
 impl RelationTrait for Relation {
     fn def(&self) -> RelationDef {
         match self {
-            Self::Stock => Entity::belongs_to(crate::stock::Entity)
-                .from(Column::IdStock)
-                .to(crate::stock::Column::Id)
+            Self::Product => Entity::belongs_to(crate::product::Entity)
+                .from(Column::IdProduct)
+                .to(crate::product::Column::Id)
                 .on_delete(ForeignKeyAction::NoAction)
                 .on_update(ForeignKeyAction::Cascade)
                 .into()
@@ -57,9 +57,9 @@ impl RelationTrait for Relation {
     }
 }
 
-impl Related<crate::stock::Entity> for Entity {
+impl Related<crate::product::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Stock.def()
+        Relation::Product.def()
     }
 }
 

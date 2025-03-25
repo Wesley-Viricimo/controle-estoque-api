@@ -8,4 +8,7 @@ pub struct OptionalProduct {
 
     #[serde(rename = "price", skip_serializing_if = "Option::is_none")]
     pub product_price: Option<f32>,
+
+    #[serde(rename = "stock_quantity", skip_serializing_if = "Option::is_none")]
+    pub product_stock_quantity: Option<u32>
 }

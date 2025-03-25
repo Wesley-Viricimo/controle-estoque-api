@@ -2,7 +2,6 @@ pub use sea_orm_migration::prelude::*;
 mod m20250319_211110_create_user_table;
 mod m20250323_232035_create_ticket_table;
 mod m20250323_232218_create_product_table;
-mod m20250323_233108_create_stock_table;
 mod m20250323_233437_create_product_ticket_table;
 mod m20250323_233726_create_stock_movimentation_table;
 
@@ -15,7 +14,6 @@ impl MigratorTrait for Migrator {
             Box::new(m20250319_211110_create_user_table::Migration),
             Box::new(m20250323_232035_create_ticket_table::Migration),
             Box::new(m20250323_232218_create_product_table::Migration),
-            Box::new(m20250323_233108_create_stock_table::Migration),
             Box::new(m20250323_233437_create_product_ticket_table::Migration),
             Box::new(m20250323_233726_create_stock_movimentation_table::Migration),
         ]

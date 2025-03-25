@@ -31,7 +31,7 @@ async fn main() -> Result<(), Error> {
     std::env::set_var("VERBOSE_REST", "1");
 
     let port: u16 = std::env::var("PORT")
-        .unwrap_or_else(|_| "4000".to_string())
+        .unwrap_or_else(|_| "8000".to_string())
         .parse::<u16>()
         .unwrap();
     info!("Listening on port {}", port);

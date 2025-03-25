@@ -20,7 +20,8 @@ pub async fn create_product(db_connection: Data<DbClient>, new_product: Json<Opt
 
     let product_to_insert = Product::new(
         new_product.product_title.clone().unwrap(), 
-        new_product.product_price.clone().unwrap()
+        new_product.product_price.clone().unwrap(),
+        new_product.product_stock_quantity.clone().unwrap()
     );
 
     match db_connection.product_dao.create(product_to_insert).await {

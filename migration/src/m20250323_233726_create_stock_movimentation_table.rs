@@ -17,7 +17,7 @@ impl MigrationTrait for Migration {
                         .primary_key(),
                 )
                 .col(
-                    ColumnDef::new(StockMovimentation::IdStock)
+                    ColumnDef::new(StockMovimentation::IdProduct)
                         .uuid()
                         .not_null(),
                 )
@@ -39,9 +39,9 @@ impl MigrationTrait for Migration {
                 )
                 .foreign_key(
                     ForeignKey::create()
-                        .name("fk_stock_movimentation_stock")
-                        .from(StockMovimentation::Table, StockMovimentation::IdStock)
-                        .to(Stock::Table, Stock::Id)
+                        .name("fk_stock_movimentation_product")
+                        .from(StockMovimentation::Table, StockMovimentation::IdProduct)
+                        .to(Product::Table, Product::Id)
                         .on_delete(ForeignKeyAction::NoAction)
                         .on_update(ForeignKeyAction::Cascade),
                 )
@@ -61,14 +61,14 @@ impl MigrationTrait for Migration {
 enum StockMovimentation {
     Table,
     Id,
-    IdStock,
+    IdProduct,
     TypeMovimentation,
     Quantity,
     CreatedAt,
 }
 
 #[derive(Iden)]
-enum Stock {
+enum Product {
     Table,
     Id,
 }

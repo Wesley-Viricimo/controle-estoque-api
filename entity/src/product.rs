@@ -20,6 +20,8 @@ pub struct Model {
     
     pub price: f32,
 
+    pub stock_quantity: u32,
+
     #[serde(
         rename = "createdAt",
         default = "get_current_time",
@@ -29,11 +31,12 @@ pub struct Model {
 }
 
 impl Model {
-    pub fn new(title: String, price: f32,) -> Self {
+    pub fn new(title: String, price: f32, stock_quantity: u32) -> Self {
         Model {
             id: Uuid::new_v4(),
             title,
             price,
+            stock_quantity,
             created_at: Utc::now()
         }
     }
