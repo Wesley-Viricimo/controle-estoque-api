@@ -20,7 +20,7 @@ pub struct Model {
     
     pub price: f32,
 
-    pub stock_quantity: u32,
+    pub stock_quantity: i32,
 
     #[serde(
         rename = "createdAt",
@@ -31,7 +31,7 @@ pub struct Model {
 }
 
 impl Model {
-    pub fn new(title: String, price: f32, stock_quantity: u32) -> Self {
+    pub fn new(title: String, price: f32, stock_quantity: i32) -> Self {
         Model {
             id: Uuid::new_v4(),
             title,

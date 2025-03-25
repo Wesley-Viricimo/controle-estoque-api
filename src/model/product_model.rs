@@ -9,6 +9,14 @@ pub struct OptionalProduct {
     #[serde(rename = "price", skip_serializing_if = "Option::is_none")]
     pub product_price: Option<f32>,
 
-    #[serde(rename = "stock_quantity", skip_serializing_if = "Option::is_none")]
-    pub product_stock_quantity: Option<u32>
+    #[serde(rename = "initial_stock", skip_serializing_if = "Option::is_none")]
+    pub initial_stock: Option<OptionalInitialStockMovimentation>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
+pub struct OptionalInitialStockMovimentation {
+    
+    #[serde(rename = "quantity", skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<i32>,
 }

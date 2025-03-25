@@ -47,6 +47,28 @@ impl ValidateProductFields {
                 });
             },
         }
+
+        match product.initial_stock.clone() {
+            Some(initial_stock) => {
+                match initial_stock.quantity {
+                    Some(_) => {}, 
+                    None => {
+                        errors.push(FieldError {
+                            field_name: "Quantity".to_string(),
+                            message: "Campo 'Quantity' é requerido".to_string(),
+                        });
+                    }
+                }
+            },
+            None => {
+                errors.push(FieldError {
+                    field_name: "Initial Stock".to_string(),
+                    message: "Valores de 'Initial Stock' são requeridos no cadastro de produto!".to_string(),
+                });
+            }
+        }
+
+
         return errors
     }
 }
