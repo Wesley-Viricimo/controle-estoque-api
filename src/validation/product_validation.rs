@@ -19,14 +19,31 @@ impl ValidateProductFields {
                 if title.is_empty() {
                     errors.push(FieldError {
                         field_name: "Title".to_string(),
-                        message: "Campo 'Title' não pode ser vazio".to_string(),
+                        message: "Campo 'Title' não pode ser vazio!".to_string(),
                     });
+                }
+
+                match self.db_connection.product_dao.find_by_title(title).await {
+                    Ok(exists) => {
+                        if exists {
+                            errors.push(FieldError {
+                                field_name: "Product".to_string(),
+                                message: "Este produto já está cadastrado no sistema!".to_string(),
+                            });
+                        }
+                    }
+                    Err(err) => {
+                        errors.push(FieldError {
+                            field_name: "Houve um erro ao realizar a requisição".to_string(),
+                            message: format!("Houve um erro ao realizar a requisição: {err}").to_string(),
+                        });
+                    }
                 }
             },
             None => {
                 errors.push(FieldError {
                     field_name: "Title".to_string(),
-                    message: "Campo 'Title' é requerido".to_string(),
+                    message: "Campo 'Title' é requerido!".to_string(),
                 });
             },
         }
@@ -36,14 +53,14 @@ impl ValidateProductFields {
                 if price.is_nan() {
                     errors.push(FieldError {
                         field_name: "Price".to_string(),
-                        message: "Campo 'Price' precisa ser um valor numérico".to_string(),
+                        message: "Campo 'Price' precisa ser um valor numérico!".to_string(),
                     });
                 }
             },
             None => {
                 errors.push(FieldError {
                     field_name: "Price".to_string(),
-                    message: "Campo 'Price' é requerido".to_string(),
+                    message: "Campo 'Price' é requerido!".to_string(),
                 });
             },
         }
@@ -55,7 +72,7 @@ impl ValidateProductFields {
                     None => {
                         errors.push(FieldError {
                             field_name: "Quantity".to_string(),
-                            message: "Campo 'Quantity' é requerido".to_string(),
+                            message: "Campo 'Quantity' é requerido!".to_string(),
                         });
                     }
                 }

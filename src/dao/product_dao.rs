@@ -14,7 +14,7 @@ impl ProductDao {
 
     pub async fn find_by_title(&self, title: String) -> Result<bool, Error> {
         let product = product::Entity::find()
-            .filter(product::Column::Title.eq(title.to_lowercase()))
+            .filter(product::Column::Title.like(title.to_uppercase().as_str()))
             .one(&self.db_connection)
             .await
             .map_err(|e| Error::DatabaseError(e.to_string()))?;
