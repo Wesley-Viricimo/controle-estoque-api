@@ -33,9 +33,24 @@ impl MigrationTrait for Migration {
                             .not_null(),
                     )
                     .col(
-                        ColumnDef::new(Ticket::FinalRating)
+                        ColumnDef::new(Ticket::PaymentMethod)
                             .string()
+                            .not_null(),
+                    )
+                    .col(
+                        ColumnDef::new(Ticket::Discount)
+                            .float()
                             .null(),
+                    )
+                    .col(
+                        ColumnDef::new(Ticket::Manpower)
+                            .float()
+                            .null(),
+                    )
+                    .col(
+                        ColumnDef::new(Ticket::TotalPrice)
+                            .float()
+                            .not_null(),
                     )
                     .col(
                         ColumnDef::new(Ticket::ClientId)
@@ -88,7 +103,10 @@ enum Ticket {
     Title,
     Description,
     Status,
-    FinalRating,
+    PaymentMethod,
+    Discount,
+    Manpower,
+    TotalPrice,
     ClientId,
     TechnicianId,
     CreatedAt,

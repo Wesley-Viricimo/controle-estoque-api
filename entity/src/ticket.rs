@@ -18,8 +18,14 @@ pub struct Model {
     pub description: String,
     
     pub status: String,
+
+    pub payment_method: String,
+
+    pub discount: Option<f32>,
     
-    pub final_rating: Option<String>,
+    pub manpower: Option<f32>,
+
+    pub total_price: f32,
     
     pub client_id: Uuid,
     
@@ -34,13 +40,16 @@ pub struct Model {
 }
 
 impl Model {
-    pub fn new(title: String, description: String, status: String, final_rating: Option<String>, client_id: Uuid, technician_id: Option<Uuid>) -> Self {
+    pub fn new(title: String, description: String, status: String, payment_method: String, discount: Option<f32>, manpower: Option<f32>, total_price: f32, client_id: Uuid, technician_id: Option<Uuid>) -> Self {
         Model {
             id: Uuid::new_v4(),
             title,
             description,
             status,
-            final_rating,
+            payment_method,
+            discount,
+            manpower,
+            total_price,
             client_id,
             technician_id,
             created_at: Utc::now()

@@ -18,8 +18,6 @@ pub struct Model {
     pub id_ticket: Uuid,
     
     pub quantity: i32,
-
-    pub price: f32,
     
     #[serde(
         rename = "createdAt",
@@ -30,13 +28,12 @@ pub struct Model {
 }
 
 impl Model {
-    pub fn new(id_product: Uuid, id_ticket: Uuid, quantity: i32, price: f32) -> Self {
+    pub fn new(id_product: Uuid, id_ticket: Uuid, quantity: i32) -> Self {
         Model {
             id: Uuid::new_v4(),
             id_product,
             id_ticket,
             quantity,
-            price,
             created_at: Utc::now()
         }
     }
