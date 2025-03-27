@@ -30,7 +30,8 @@ pub async fn create_product(db_connection: Data<DbClient>, new_product: Json<Opt
             let stock_movimentation_to_insert = StockMovimentationModel::new(
                 product.id.clone(), 
                 "ENTRADA".to_string(),
-                new_product.initial_stock.clone().unwrap().quantity.unwrap()
+                new_product.initial_stock.clone().unwrap().quantity.unwrap(),
+                new_product.initial_stock.clone().unwrap().cost_price
             );
 
             match db_connection.stock_movimentation_dao.create(stock_movimentation_to_insert).await {
@@ -38,7 +39,8 @@ pub async fn create_product(db_connection: Data<DbClient>, new_product: Json<Opt
                     let stock_movimentation = StockMovimentationResponse {
                         id_stock_movimentation: stock_movimentation.id,
                         type_movimentation: "ENTRADA".to_string(),
-                        quantity: new_product.initial_stock.clone().unwrap().quantity.unwrap()
+                        quantity: new_product.initial_stock.clone().unwrap().quantity.unwrap(),
+                        cost_price: new_product.initial_stock.clone().unwrap().cost_price
                     };
 
                     let product_response_data = ProductResponseData {

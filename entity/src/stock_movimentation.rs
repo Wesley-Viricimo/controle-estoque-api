@@ -17,6 +17,8 @@ pub struct Model {
     
     pub type_movimentation: String,
 
+    pub cost_price: Option<f32>,
+
     pub quantity: i32,
     
     #[serde(
@@ -28,12 +30,13 @@ pub struct Model {
 }
 
 impl Model {
-    pub fn new(id_product: Uuid, type_movimentation: String, quantity: i32) -> Self {
+    pub fn new(id_product: Uuid, type_movimentation: String, quantity: i32, cost_price: Option<f32>) -> Self {
         Model {
             id: Uuid::new_v4(),
             id_product,
             type_movimentation,
             quantity,
+            cost_price,
             created_at: Utc::now()
         }
     }

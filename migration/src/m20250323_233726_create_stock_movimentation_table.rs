@@ -32,6 +32,11 @@ impl MigrationTrait for Migration {
                         .not_null(),
                 )
                 .col(
+                    ColumnDef::new(StockMovimentation::CostPrice)
+                        .float()
+                        .null(),
+                )
+                .col(
                     ColumnDef::new(StockMovimentation::CreatedAt)
                         .timestamp_with_time_zone()
                         .not_null()
@@ -64,6 +69,7 @@ enum StockMovimentation {
     IdProduct,
     TypeMovimentation,
     Quantity,
+    CostPrice,
     CreatedAt,
 }
 

@@ -19,4 +19,7 @@ pub struct OptionalInitialStockMovimentation {
     
     #[serde(rename = "quantity", skip_serializing_if = "Option::is_none")]
     pub quantity: Option<i32>,
+
+    #[serde(rename = "cost_price", skip_serializing_if = "Option::is_none")]
+    pub cost_price: Option<f32>
 }

@@ -76,6 +76,16 @@ impl ValidateProductFields {
                         });
                     }
                 }
+
+                match initial_stock.cost_price {
+                    Some(_) => {}, 
+                    None => {
+                        errors.push(FieldError {
+                            field_name: "Cost Price".to_string(),
+                            message: "Campo 'Cost Price' é requerido!".to_string(),
+                        });
+                    }
+                }
             },
             None => {
                 errors.push(FieldError {

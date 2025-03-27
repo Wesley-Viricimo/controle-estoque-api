@@ -36,4 +36,5 @@ pub struct StockMovimentationResponse {
     pub id_stock_movimentation: Uuid,
     pub type_movimentation: String,
     pub quantity: i32,
+    pub cost_price: Option<f32>
 }
