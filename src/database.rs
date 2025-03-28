@@ -1,6 +1,8 @@
 use std::time::Duration;
 
+use crate::dao::product_ticket_dao::ProductTicketDao;
 use crate::dao::stock_movimentation_dao::StockMovimentationDao;
+use crate::dao::ticket_dao::TicketDao;
 use crate::dao::{product_dao::ProductDao, user_dao::UserDao};
 use crate::utils::env::get_env_var;
 use crate::utils::errors::Error;
@@ -10,7 +12,9 @@ use sea_orm::{ConnectOptions, Database, DatabaseConnection};
 pub struct DbClient {
     pub user_dao: UserDao,
     pub product_dao: ProductDao,
-    pub stock_movimentation_dao: StockMovimentationDao
+    pub stock_movimentation_dao: StockMovimentationDao,
+    pub ticket_dao: TicketDao,
+    pub product_ticket_dao: ProductTicketDao
 }
 
 fn construct_db_uri() -> Result<String, Error> {
@@ -70,11 +74,15 @@ impl DbClient {
         let user_dao = UserDao::init(db_connection.clone());
         let product_dao = ProductDao::init(db_connection.clone());
         let stock_movimentation_dao = StockMovimentationDao::init(db_connection.clone());
+        let ticket_dao = TicketDao::init(db_connection.clone());
+        let product_ticket_dao = ProductTicketDao::init(db_connection.clone());
 
         Ok(DbClient { 
             user_dao,
             product_dao,
-            stock_movimentation_dao
+            stock_movimentation_dao,
+            ticket_dao,
+            product_ticket_dao
         })
     }
 }
