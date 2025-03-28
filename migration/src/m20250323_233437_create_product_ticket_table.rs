@@ -37,6 +37,13 @@ impl MigrationTrait for Migration {
                         .not_null()
                         .extra("DEFAULT NOW()".to_owned()),
                 )
+                .index(
+                    Index::create()
+                        .name("idx_unique_product_ticket")
+                        .col(ProductTicket::IdProduct)
+                        .col(ProductTicket::IdTicket)
+                        .unique(),
+                )
                 .foreign_key(
                     ForeignKey::create()
                         .name("fk_product_ticket_product")
