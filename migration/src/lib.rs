@@ -4,6 +4,7 @@ mod m20250323_232035_create_ticket_table;
 mod m20250323_232218_create_product_table;
 mod m20250323_233437_create_product_ticket_table;
 mod m20250323_233726_create_stock_movimentation_table;
+mod m20250329_120608_create_payment_method_table;
 
 pub struct Migrator;
 
@@ -16,6 +17,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20250323_232218_create_product_table::Migration),
             Box::new(m20250323_233437_create_product_ticket_table::Migration),
             Box::new(m20250323_233726_create_stock_movimentation_table::Migration),
+            Box::new(m20250329_120608_create_payment_method_table::Migration),
         ]
     }
 }
