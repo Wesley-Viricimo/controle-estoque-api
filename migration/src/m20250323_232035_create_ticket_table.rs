@@ -33,6 +33,16 @@ impl MigrationTrait for Migration {
                             .not_null(),
                     )
                     .col(
+                        ColumnDef::new(Ticket::PaymentMethod)
+                            .string()
+                            .not_null(),
+                    )
+                    .col(
+                        ColumnDef::new(Ticket::Discount)
+                            .float()
+                            .null(),
+                    )
+                    .col(
                         ColumnDef::new(Ticket::Manpower)
                             .float()
                             .null(),
@@ -40,11 +50,6 @@ impl MigrationTrait for Migration {
                     .col(
                         ColumnDef::new(Ticket::TotalPrice)
                             .float()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(Ticket::PaymentMethodId)
-                            .uuid()
                             .not_null(),
                     )
                     .col(
@@ -79,14 +84,6 @@ impl MigrationTrait for Migration {
                             .on_delete(ForeignKeyAction::SetNull)
                             .on_update(ForeignKeyAction::Cascade),
                     )
-                    .foreign_key(
-                        ForeignKey::create()
-                            .name("fk_ticket_payment_method")
-                            .from(Ticket::Table, Ticket::PaymentMethodId)
-                            .to(PaymentMethod::Table, PaymentMethod::Id)
-                            .on_delete(ForeignKeyAction::Cascade)
-                            .on_update(ForeignKeyAction::Cascade),
-                    )
                     .to_owned(),
             )
             .await
@@ -106,9 +103,10 @@ enum Ticket {
     Title,
     Description,
     Status,
+    PaymentMethod,
+    Discount,
     Manpower,
     TotalPrice,
-    PaymentMethodId,
     ClientId,
     TechnicianId,
     CreatedAt,
@@ -116,12 +114,6 @@ enum Ticket {
 
 #[derive(Iden)]
 enum User {
-    Table,
-    Id,
-}
-
-#[derive(Iden)]
-enum PaymentMethod {
     Table,
     Id,
 }
