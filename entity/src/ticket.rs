@@ -18,14 +18,12 @@ pub struct Model {
     pub description: String,
     
     pub status: String,
-
-    pub payment_method: String,
-
-    pub discount: Option<f32>,
     
     pub manpower: Option<f32>,
 
     pub total_price: f32,
+
+    pub payment_method_id: Uuid,
     
     pub client_id: Uuid,
     
@@ -40,16 +38,15 @@ pub struct Model {
 }
 
 impl Model {
-    pub fn new(title: String, description: String, status: String, payment_method: String, discount: Option<f32>, manpower: Option<f32>, total_price: f32, client_id: Uuid, technician_id: Option<Uuid>) -> Self {
+    pub fn new(title: String, description: String, status: String, manpower: Option<f32>, total_price: f32, payment_method_id: Uuid, client_id: Uuid, technician_id: Option<Uuid>) -> Self {
         Model {
             id: Uuid::new_v4(),
             title,
             description,
             status,
-            payment_method,
-            discount,
             manpower,
             total_price,
+            payment_method_id,
             client_id,
             technician_id,
             created_at: Utc::now()
@@ -61,6 +58,7 @@ impl Model {
 pub enum Relation {
     Client,
     Technician,
+    PaymentMethod
 }
 
 impl RelationTrait for Relation {
@@ -81,6 +79,13 @@ impl RelationTrait for Relation {
                 .on_delete(ForeignKeyAction::SetNull)
                 .on_update(ForeignKeyAction::Cascade)
                 .into(),
+
+            Self::PaymentMethod => Entity::belongs_to(crate::payment_method::Entity)
+                .from(Column::PaymentMethodId)
+                .to(crate::payment_method::Column::Id)
+                .on_delete(ForeignKeyAction::Cascade)
+                .on_update(ForeignKeyAction::Cascade)
+                .into()
         }
     }
 }
@@ -88,6 +93,12 @@ impl RelationTrait for Relation {
 impl Related<crate::user::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Client.def()
+    }
+}
+
+impl Related<crate::payment_method::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::PaymentMethod.def()
     }
 }
 
