@@ -1,5 +1,6 @@
 use std::time::Duration;
 
+use crate::dao::payment_method_dao::PaymentMethodDao;
 use crate::dao::product_ticket_dao::ProductTicketDao;
 use crate::dao::stock_movimentation_dao::StockMovimentationDao;
 use crate::dao::ticket_dao::TicketDao;
@@ -14,7 +15,8 @@ pub struct DbClient {
     pub product_dao: ProductDao,
     pub stock_movimentation_dao: StockMovimentationDao,
     pub ticket_dao: TicketDao,
-    pub product_ticket_dao: ProductTicketDao
+    pub product_ticket_dao: ProductTicketDao,
+    pub payment_method_dao: PaymentMethodDao
 }
 
 fn construct_db_uri() -> Result<String, Error> {
@@ -76,13 +78,15 @@ impl DbClient {
         let stock_movimentation_dao = StockMovimentationDao::init(db_connection.clone());
         let ticket_dao = TicketDao::init(db_connection.clone());
         let product_ticket_dao = ProductTicketDao::init(db_connection.clone());
+        let payment_method_dao = PaymentMethodDao::init(db_connection.clone());
 
         Ok(DbClient { 
             user_dao,
             product_dao,
             stock_movimentation_dao,
             ticket_dao,
-            product_ticket_dao
+            product_ticket_dao,
+            payment_method_dao
         })
     }
 }

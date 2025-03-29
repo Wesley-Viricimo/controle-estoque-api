@@ -7,6 +7,9 @@ pub struct OptionalTicket {
     #[serde(rename = "client_id", skip_serializing_if = "Option::is_none")]
     pub ticket_client_id: Option<Uuid>,
 
+    #[serde(rename = "payment_method_id", skip_serializing_if = "Option::is_none")]
+    pub ticket_payment_method_id: Option<String>,
+
     #[serde(rename = "title", skip_serializing_if = "Option::is_none")]
     pub ticket_title: Option<String>,
 
@@ -15,9 +18,6 @@ pub struct OptionalTicket {
 
     #[serde(rename = "status", skip_serializing_if = "Option::is_none")]
     pub ticket_status: Option<String>,
-
-    #[serde(rename = "payment_method", skip_serializing_if = "Option::is_none")]
-    pub ticket_payment_method: Option<String>,
 
     #[serde(rename = "discount", skip_serializing_if = "Option::is_none")]
     pub ticket_discount: Option<f32>,
