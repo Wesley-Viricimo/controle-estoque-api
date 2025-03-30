@@ -8,7 +8,7 @@ pub struct OptionalTicket {
     pub ticket_client_id: Option<Uuid>,
 
     #[serde(rename = "payment_method_id", skip_serializing_if = "Option::is_none")]
-    pub ticket_payment_method_id: Option<String>,
+    pub ticket_payment_method_id: Option<Uuid>,
 
     #[serde(rename = "title", skip_serializing_if = "Option::is_none")]
     pub ticket_title: Option<String>,

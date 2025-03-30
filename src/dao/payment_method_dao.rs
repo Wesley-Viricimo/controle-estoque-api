@@ -12,6 +12,15 @@ impl PaymentMethodDao {
         PaymentMethodDao { db_connection }
     }
 
+    pub async fn find_by_id(&self, payment_method: Uuid) -> Result<Option<payment_method::Model>, Error> {
+        let payment_method = payment_method::Entity::find_by_id(payment_method)
+            .one(&self.db_connection)
+            .await
+            .map_err(|e| Error::DatabaseError(e.to_string()))?;
+
+        Ok(payment_method)
+    }
+
     pub async fn find_by_description(&self, description: String) -> Result<bool, Error> {
         let payment_method = payment_method::Entity::find()
             .filter(payment_method::Column::Description.like(description.to_uppercase().as_str()))

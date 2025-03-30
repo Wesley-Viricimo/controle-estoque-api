@@ -12,18 +12,13 @@ impl UserDao {
         UserDao { db_connection }
     }
 
-    pub async fn find_by_id(&self, client_id: Uuid) -> Result<bool, Error> {
+    pub async fn find_by_id(&self, client_id: Uuid) -> Result<Option<user::Model>, Error> {
         let user = user::Entity::find_by_id(client_id)
             .one(&self.db_connection)
             .await
             .map_err(|e| Error::DatabaseError(e.to_string()))?;
 
-        let exists = match user {
-            Some(_) => true,
-            None => false
-        };
-
-        Ok(exists)
+        Ok(user)
     }
 
     pub async fn find_by_email(&self, email: String) -> Result<bool, Error> {
