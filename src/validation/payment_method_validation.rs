@@ -10,10 +10,10 @@ impl ValidatePaymentMethodFields {
         Self { db_connection }
     }
 
-    pub async fn validate_payment_method_product_fields(&self, payment_method: &Json<OptionalPaymentMethod>) -> Vec<FieldError> {
+    pub async fn validate_payment_method_product_fields(&self, new_payment_method: &Json<OptionalPaymentMethod>) -> Vec<FieldError> {
         let mut errors: Vec<FieldError> = Vec::new();
 
-        match payment_method.payment_method_description.clone() {
+        match new_payment_method.payment_method_description.clone() {
             Some(description) => {
                 if description.is_empty() {
                     errors.push(FieldError {
@@ -47,7 +47,7 @@ impl ValidatePaymentMethodFields {
             },
         }
 
-        match payment_method.payment_method_discount.clone() {
+        match new_payment_method.payment_method_discount.clone() {
             Some(discount) => {
                 if discount > 60.0 || discount < -60.0 {
                     errors.push(FieldError {
