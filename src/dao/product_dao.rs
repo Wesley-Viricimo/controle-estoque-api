@@ -12,6 +12,15 @@ impl ProductDao {
         ProductDao { db_connection }
     }
 
+    pub async fn find_by_id(&self, product_id: Uuid) -> Result<Option<product::Model>, Error> {
+        let product = product::Entity::find_by_id(product_id)
+            .one(&self.db_connection)
+            .await
+            .map_err(|e| Error::DatabaseError(e.to_string()))?;
+
+        Ok(product)
+    }
+
     pub async fn find_by_title(&self, title: String) -> Result<bool, Error> {
         let product = product::Entity::find()
             .filter(product::Column::Title.like(title.to_uppercase().as_str()))

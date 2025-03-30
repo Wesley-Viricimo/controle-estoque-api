@@ -19,9 +19,6 @@ pub struct OptionalTicket {
     #[serde(rename = "status", skip_serializing_if = "Option::is_none")]
     pub ticket_status: Option<String>,
 
-    #[serde(rename = "discount", skip_serializing_if = "Option::is_none")]
-    pub ticket_discount: Option<f32>,
-
     #[serde(rename = "manpower", skip_serializing_if = "Option::is_none")]
     pub ticket_manpower: Option<f32>,
 
