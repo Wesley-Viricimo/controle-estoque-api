@@ -50,6 +50,7 @@ async fn main() -> Result<(), Error> {
                 web::scope("/api")
                     .configure(controller::user_controller::attach_service)
                     .configure(controller::product_controller::attach_service)
+                    .configure(controller::payment_method_controller::attach_service)
             )
     })
     .bind(("0.0.0.0", port))?
