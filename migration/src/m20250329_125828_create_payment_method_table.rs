@@ -28,7 +28,7 @@ impl MigrationTrait for Migration {
                     .col(
                         ColumnDef::new(PaymentMethod::Discount)
                             .float()
-                            .not_null()
+                            .null()
                     )
                     .col(
                         ColumnDef::new(PaymentMethod::CreatedAt)
