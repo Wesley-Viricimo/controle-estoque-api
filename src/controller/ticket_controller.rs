@@ -19,95 +19,97 @@ pub async fn create_ticket(db_connection: Data<DbClient>, new_ticket: Json<Optio
     let payment_method = validate_ticket.validate_payment_method_field(&new_ticket, &mut errors).await;
 
     if !errors.is_empty() {
-        let response_error = get_response_error(errors);
-        return HttpResponse::BadRequest().json(response_error);
+        return HttpResponse::BadRequest().json(get_response_error(errors));
     }
 
-    let mut total_value_ticket: f32 = new_ticket.ticket_manpower.clone().unwrap();
-    let mut products: Vec<ProductTicketResponseData> = Vec::new();
+    let manpower = new_ticket.ticket_manpower.clone().expect("Ticket manpower is missing");
+    let mut total_value_ticket = manpower;
+    let mut products = Vec::<ProductTicketResponseData>::new();
 
-    match new_ticket.ticket_products.clone() {
-        Some(vec_optional_product_ticket) => {
-            for optional_product_ticket in vec_optional_product_ticket {
-                let product = db_connection.product_dao.find_by_id(optional_product_ticket.ticket_product_id.unwrap()).await.unwrap().unwrap();
-                let total_product_price = product.price * optional_product_ticket.quantity.unwrap() as f32;
-                total_value_ticket = total_value_ticket + total_product_price;
+    if let Some(optional_products) = new_ticket.ticket_products.clone() {
+        for optional_product_ticket in optional_products {
+            let product_id = optional_product_ticket.ticket_product_id.expect("Product id is missing");
+            let quantity = optional_product_ticket.quantity.expect("Quantity is missing");
 
-                let product_model = ProductTicketResponseData {
-                    id_product: product.id,
-                    quantity: optional_product_ticket.quantity.unwrap(),
-                    price: product.price
-                };
+            let product = db_connection.product_dao
+                .find_by_id(product_id)
+                .await
+                .expect("Database error")
+                .expect("Product not found");
 
-                products.push(product_model);
-            }
-        },
-        None => {}
-    }
+            total_value_ticket += product.price * quantity as f32;
 
-    match payment_method.clone() {
-        Some(payment) => {
-            match payment.discount.clone() {
-                Some(discount) => {
-                    if discount > 0.0 {
-                        let discount_value = total_value_ticket * (discount / 100.0);
-                        total_value_ticket -= discount_value;
-                    } else if discount < 0.0 {
-                        let increase_value = total_value_ticket * ((-discount) / 100.0); // ou discount.abs()
-                        total_value_ticket += increase_value;
-                    }
-                },
-                None => {}
-            }
-        },
-        None => {}
+            let product_model = ProductTicketResponseData {
+                id_product: product.id,
+                quantity,
+                price: product.price,
+            };
+
+            products.push(product_model);
+        }
     }
     
+    if let Some(payment) = payment_method.clone() {
+        if let Some(discount) = payment.discount {
+            if discount > 0.0 {
+                let discount_value = total_value_ticket * (discount / 100.0);
+                total_value_ticket -= discount_value;
+            } else if discount < 0.0 {
+                let increase_value = total_value_ticket * ((-discount) / 100.0);
+                total_value_ticket += increase_value;
+            }
+        }
+    }
 
     let ticket_to_insert = Ticket::new(
-        new_ticket.ticket_title.clone().unwrap(), 
-        new_ticket.ticket_description.clone().unwrap(), 
-        new_ticket.ticket_status.clone().unwrap(), 
-        new_ticket.ticket_manpower.clone(), 
-        total_value_ticket, 
-        payment_method.clone().unwrap().id, 
-        new_ticket.ticket_client_id.unwrap(), 
-        None
+        new_ticket.ticket_title.clone().expect("Ticket title is missing"),
+        new_ticket.ticket_description.clone().expect("Ticket description is missing"),
+        new_ticket.ticket_status.clone().expect("Ticket status is missing"),
+        new_ticket.ticket_manpower.clone(),
+        total_value_ticket,
+        payment_method.clone().expect("Payment method is missing").id,
+        new_ticket.ticket_client_id.expect("Client id is missing"),
+        None,
     );
 
     match db_connection.ticket_dao.create(ticket_to_insert).await {
         Ok(ticket) => {
-            if !products.is_empty() {
-                for product in products.clone() {
-                    let product_ticket_to_insert = ProductTicket::new(
-                        product.id_product, 
-                        ticket.id.clone(), 
-                        product.quantity
-                    );
+            // Para cada produto, insere os registros correspondentes.
+            for product in products.clone() {
+                let product_ticket_to_insert = ProductTicket::new(
+                    product.id_product,
+                    ticket.id.clone(),
+                    product.quantity,
+                );
 
-                    let _ = db_connection.product_ticket_dao.create(product_ticket_to_insert.clone()).await;
+                let _ = db_connection.product_ticket_dao
+                    .create(product_ticket_to_insert.clone())
+                    .await;
 
-                    let stock_movimentation_to_insert = StockMovimentationModel::new(
-                        product.id_product, 
-                        "SAIDA".to_string(),
-                        product_ticket_to_insert.quantity.clone(),
-                        None
-                    );
+                let stock_movimentation_to_insert = StockMovimentationModel::new(
+                    product.id_product,
+                    "SAIDA".to_string(),
+                    product_ticket_to_insert.quantity,
+                    None,
+                );
 
-                    let _ = db_connection.stock_movimentation_dao.create(stock_movimentation_to_insert).await;
-                }
+                let _ = db_connection.stock_movimentation_dao
+                    .create(stock_movimentation_to_insert)
+                    .await;
             }
 
+            let client = client_ticket.expect("Client ticket is missing");
             let client_response_data = ClientResponseData {
-                id: client_ticket.clone().unwrap().id,
-                name: client_ticket.clone().unwrap().name,
-                cpf: client_ticket.clone().unwrap().email,
-                email: client_ticket.unwrap().cpf
+                id: client.id,
+                name: client.name,
+                cpf: client.email,
+                email: client.cpf,
             };
 
+            let payment = payment_method.expect("Payment method is missing");
             let payment_response_data = PaymentMethodResponseData {
-                id: payment_method.clone().unwrap().id,
-                description: payment_method.clone().unwrap().description
+                id: payment.id,
+                description: payment.description,
             };
 
             let ticket_response_data = TicketResponseData {
@@ -117,19 +119,19 @@ pub async fn create_ticket(db_connection: Data<DbClient>, new_ticket: Json<Optio
                 description: ticket.description,
                 status: ticket.status,
                 payment_method: payment_response_data,
-                products: products.clone(),
+                products,
                 manpower: ticket.manpower,
-                total_price: ticket.total_price
+                total_price: ticket.total_price,
             };
 
-            let response: SuccessResponse<TicketResponseData> = SuccessResponse {
+            let response = SuccessResponse {
                 data: ticket_response_data,
                 code: 201,
                 detail: "Ticket aberto com sucesso!".to_string(),
             };
 
             HttpResponse::Created().json(response)
-        },
+        }
         Err(err) => HttpResponse::InternalServerError().body(err.to_string()),
     }
 }
