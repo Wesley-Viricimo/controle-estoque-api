@@ -103,6 +103,9 @@ pub async fn create_ticket(db_connection: Data<DbClient>, new_ticket: Json<Optio
                     .await;
             }
 
+
+            
+
             let client = client_ticket.expect("Client ticket is missing");
             let client_response_data = ClientResponseData {
                 id: client.id,
