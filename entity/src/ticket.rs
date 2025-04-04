@@ -21,7 +21,9 @@ pub struct Model {
     
     pub manpower: Option<f32>,
 
-    pub total_discount_increase: f32,
+    pub total_discount: f32,
+
+    pub total_increase: f32,
 
     pub total_price: f32,
 
@@ -40,14 +42,15 @@ pub struct Model {
 }
 
 impl Model {
-    pub fn new(title: String, description: String, status: String, manpower: Option<f32>, total_discount_increase: f32, total_price: f32, payment_method_id: Uuid, client_id: Uuid, technician_id: Option<Uuid>) -> Self {
+    pub fn new(title: String, description: String, status: String, manpower: Option<f32>, total_discount: f32, total_increase: f32, total_price: f32, payment_method_id: Uuid, client_id: Uuid, technician_id: Option<Uuid>) -> Self {
         Model {
             id: Uuid::new_v4(),
             title,
             description,
             status,
             manpower,
-            total_discount_increase,
+            total_discount,
+            total_increase,
             total_price,
             payment_method_id,
             client_id,

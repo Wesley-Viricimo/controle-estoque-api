@@ -49,18 +49,19 @@ pub async fn create_ticket(db_connection: Data<DbClient>, new_ticket: Json<Optio
         }
     }
 
-    let mut total_discount_increase: f32 = 0.0;
+    let mut total_discount: f32 = 0.0;
+    let mut total_increase: f32 = 0.0;
 
     if let Some(payment) = payment_method.clone() {
         if let Some(discount) = payment.discount {
             if discount > 0.0 {
                 let discount_value = total_value_ticket * (discount / 100.0);
                 total_value_ticket -= discount_value;
-                total_discount_increase = discount_value;
+                total_discount = discount_value;
             } else if discount < 0.0 {
                 let increase_value = total_value_ticket * ((-discount) / 100.0);
                 total_value_ticket += increase_value;
-                total_discount_increase = increase_value;
+                total_increase = increase_value;
             }
         }
     }
@@ -70,7 +71,8 @@ pub async fn create_ticket(db_connection: Data<DbClient>, new_ticket: Json<Optio
         new_ticket.ticket_description.clone().expect("Ticket description is missing"),
         new_ticket.ticket_status.clone().expect("Ticket status is missing"),
         new_ticket.ticket_manpower.clone(),
-        total_discount_increase.clone(),
+        total_discount.clone(),
+        total_increase.clone(),
         total_value_ticket,
         payment_method.clone().expect("Payment method is missing").id,
         new_ticket.ticket_client_id.expect("Client id is missing"),
@@ -103,9 +105,6 @@ pub async fn create_ticket(db_connection: Data<DbClient>, new_ticket: Json<Optio
                     .await;
             }
 
-
-            
-
             let client = client_ticket.expect("Client ticket is missing");
             let client_response_data = ClientResponseData {
                 id: client.id,
@@ -129,7 +128,8 @@ pub async fn create_ticket(db_connection: Data<DbClient>, new_ticket: Json<Optio
                 payment_method: payment_response_data,
                 products,
                 manpower: ticket.manpower,
-                total_discount_increase,
+                total_discount,
+                total_increase,
                 total_price: ticket.total_price,
             };
 

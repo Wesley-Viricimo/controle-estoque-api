@@ -71,6 +71,7 @@ pub struct TicketResponseData {
     pub payment_method: PaymentMethodResponseData,
     pub products: Vec<ProductTicketResponseData>,
     pub manpower: Option<f32>,
-    pub total_discount_increase: f32,
+    pub total_discount: f32,
+    pub total_increase: f32,
     pub total_price: f32,
 }
