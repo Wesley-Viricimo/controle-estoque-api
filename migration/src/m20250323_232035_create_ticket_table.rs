@@ -38,7 +38,12 @@ impl MigrationTrait for Migration {
                             .null(),
                     )
                     .col(
-                        ColumnDef::new(Ticket::TotalDiscountIncrease)
+                        ColumnDef::new(Ticket::TotalDiscount)
+                            .float()
+                            .null(),
+                    )
+                    .col(
+                        ColumnDef::new(Ticket::TotalIncrease)
                             .float()
                             .null(),
                     )
@@ -112,7 +117,8 @@ enum Ticket {
     Description,
     Status,
     Manpower,
-    TotalDiscountIncrease,
+    TotalDiscount,
+    TotalIncrease,
     TotalPrice,
     PaymentMethodId,
     ClientId,
