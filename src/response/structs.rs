@@ -43,7 +43,9 @@ pub struct StockMovimentationResponse {
 #[derive(Clone)]
 pub struct ProductTicketResponseData {
     pub id_product: Uuid,
-    pub quantity: i32,
+    pub title: String,
+    pub quantity_sale: i32,
+    pub quantity_in_stock: i32,
     pub price: f32,
 }
 

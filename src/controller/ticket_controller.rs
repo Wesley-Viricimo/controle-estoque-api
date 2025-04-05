@@ -3,6 +3,7 @@ use crate::{database::DbClient, model::ticket_model::OptionalTicket, response::s
 use entity::ticket::Model as Ticket;
 use entity::product_ticket::Model as ProductTicket;
 use entity::stock_movimentation::Model as StockMovimentationModel;
+use entity::product::Model as Product;
 
 pub fn attach_service(app: &mut actix_web::web::ServiceConfig) {
     app.service(create_ticket);
@@ -41,7 +42,9 @@ pub async fn create_ticket(db_connection: Data<DbClient>, new_ticket: Json<Optio
 
             let product_model = ProductTicketResponseData {
                 id_product: product.id,
-                quantity,
+                title: product.title,
+                quantity_sale: quantity,
+                quantity_in_stock: product.stock_quantity - quantity,
                 price: product.price,
             };
 
@@ -86,12 +89,23 @@ pub async fn create_ticket(db_connection: Data<DbClient>, new_ticket: Json<Optio
                 let product_ticket_to_insert = ProductTicket::new(
                     product.id_product,
                     ticket.id.clone(),
-                    product.quantity,
+                    product.quantity_sale,
                 );
 
                 let _ = db_connection.product_ticket_dao
                     .create(product_ticket_to_insert.clone())
                     .await;
+
+                let product_update = Product::new(
+                    product.title, 
+                    product.price, 
+                    product.quantity_in_stock
+                );
+
+                let _ = db_connection.product_dao
+                    .update(product.id_product, product_update)
+                    .await;
+                
 
                 let stock_movimentation_to_insert = StockMovimentationModel::new(
                     product.id_product,
